@@ -7,20 +7,16 @@
 
 bool is_safe(const std::vector<int> &v) {
     bool inc = true, dec = true;
-    for (size_t i = 0; i < v.size() - 1; ++i) {
-        int curr = v[i], succ = v[i + 1];
-
-        if ((curr == succ) || (std::abs(curr - succ) > 3))
+    for (size_t i = 1; i < v.size(); ++i) {
+        int diff = v[i] - v[i - 1];
+        if (std::abs(diff) > 3 || diff == 0)
             return false;
-        if (curr > succ)
-            dec = false;
-        if (curr < succ)
-            inc = false;
-        if (!inc && !dec)
+        inc &= diff > 0;
+        dec &= diff < 0;
+        if (!inc && !dec) 
             return false;
     }
-
-    return inc || dec;
+    return true;
 }
 
 bool safe_with_caveats(std::vector<int> &v) {
