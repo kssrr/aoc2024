@@ -19,11 +19,12 @@ vector<string> find_instructions(const string &inp) {
     return matches;
 }
 
-vector<string> enabled_mults(const vector<string> &instructions) {
-    vector<string> mults;
+int exec(const vector<string> &instructs) {
+    int sum = 0;
     bool enabled = true;
+    const std::regex NUMS("\\d+");
 
-    for (const string &inst : instructions) {
+    for (const auto &inst : instructs) {
         if (inst == "do()" && !enabled) {
             enabled = true;
             continue;
@@ -35,40 +36,19 @@ vector<string> enabled_mults(const vector<string> &instructions) {
         }
 
         if (enabled && std::regex_match(inst, MUL_FORMAT)) {
-            mults.push_back(inst);
-        }
-    }
-
-    return mults;
-}
-
-vector<int> get_products(const vector<string> &matches) {
-    vector<int> products;
-    const std::regex NUMS("\\d+");
-
-    for (const auto &match : matches) {
-        vector<int> numbers;
-        auto begin = std::sregex_iterator(match.begin(), match.end(), NUMS);
-        auto end = std::sregex_iterator();
-        for (auto it = begin; it != end; ++it) {
-            numbers.push_back(std::stoi(it->str()));
-        }
-
-        if (numbers.size() == 2) {
-            int prod = numbers[0] * numbers[1];
-            products.push_back(prod);
-        } 
-    }
+            vector<int> numbers;
+            auto begin = std::sregex_iterator(inst.begin(), inst.end(), NUMS);
+            auto end = std::sregex_iterator();
+            for (auto it = begin; it != end; ++it) {
+                numbers.push_back(std::stoi(it->str()));
+            }
     
-    return products;
-}
-
-int sum(const vector<int> &vec) {
-    int s = 0;
-    for (const int &x : vec) {
-        s += x;
+            if (numbers.size() == 2) {
+                sum += numbers[0] * numbers[1];
+            } 
+        }
     }
-    return s;
+    return sum;
 }
 
 int main(int argc, char **argv) {
@@ -79,11 +59,9 @@ int main(int argc, char **argv) {
     buffer << infile.rdbuf();
 
     const string input = buffer.str();
-    vector<string> matches = find_instructions(input);
-    vector<string> mults = enabled_mults(matches);
-    vector<int> products = get_products(mults);
+    vector<string> instructions = find_instructions(input);
 
-    std::cout << sum(products) << '\n';
+    std::cout << exec(instructions) << '\n';
 
     return EXIT_SUCCESS;
 }
