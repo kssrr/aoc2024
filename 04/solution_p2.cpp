@@ -1,22 +1,18 @@
-#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <vector>
 
-using std::string;
-using std::vector;
-
 int main(int argc, char **argv) {
     (void)argc;
 
-    vector<vector<char>> mat;
-    string line;
+    std::vector<std::vector<char>> mat;
+    std::string line;
     std::ifstream infile(argv[1]);
 
     while (std::getline(infile, line)) {
-       mat.push_back(vector<char>(line.begin(), line.end()));
+       mat.push_back(std::vector<char>(line.begin(), line.end()));
     }
 
     int occurences = 0;
